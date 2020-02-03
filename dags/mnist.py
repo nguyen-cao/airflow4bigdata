@@ -33,6 +33,7 @@ from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.utils import check_random_state
+import pickle
 
 args = {
     'owner': 'Airflow',
@@ -78,8 +79,8 @@ def task_1(output_path_X, output_path_y):
 step_1 = PythonOperator(
     task_id='step_1',
     python_callable=task_1,
-    op_kwargs={'output_path_X': 'mnsit-preprocess/X_data.csv', \
-               'output_path_y': 'mnsit-preprocess/y_data.csv',
+    op_kwargs={'output_path_X': 'mnist-preprocess/X_data.csv', \
+               'output_path_y': 'mnist-preprocess/y_data.csv',
         },
     dag=dag,
 )
@@ -90,7 +91,7 @@ step_1 = PythonOperator(
 def task_2(input_path_X, input_path_y, \
            output_path_Xtrain, output_path_ytrain, \
            output_path_Xtest, output_path_ytest):
-
+    train_samples = 5000
     # df_X = pd.read_csv(input_path_X)
     # df_y = pd.read_csv(input_path_y)
     X = pd.read_csv(input_path_X).to_numpy()
@@ -110,12 +111,12 @@ def task_2(input_path_X, input_path_y, \
 step_2 = PythonOperator(
     task_id='step_2',
     python_callable=task_2,
-    op_kwargs={'input_path_X': 'mnsit-preprocess/X_data.csv', \
-               'input_path_y': 'mnsit-preprocess/y_data.csv', \
-               'output_path_Xtrain': 'mnsit-preprocess/Xtrain_data.csv', \
-               'output_path_ytrain': 'mnsit-preprocess/ytrain_data.csv', \
-               'output_path_Xtest': 'mnsit-preprocess/Xtest_data.csv', \
-               'output_path_ytest': 'mnsit-preprocess/ytest_data.csv', 
+    op_kwargs={'input_path_X': 'mnist-preprocess/X_data.csv', \
+               'input_path_y': 'mnist-preprocess/y_data.csv', \
+               'output_path_Xtrain': 'mnist-preprocess/Xtrain_data.csv', \
+               'output_path_ytrain': 'mnist-preprocess/ytrain_data.csv', \
+               'output_path_Xtest': 'mnist-preprocess/Xtest_data.csv', \
+               'output_path_ytest': 'mnist-preprocess/ytest_data.csv', 
         },
     dag=dag,
 )
@@ -123,7 +124,7 @@ step_2 = PythonOperator(
 
 # APPLY MODEL 1 TO TRAINING DATA
 def task_3(input_path_Xtrain, input_path_ytrain, model_path):
-
+    train_samples = 5000
     X_train = pd.read_csv(input_path_Xtrain).to_numpy()
     y_train = pd.read_csv(input_path_ytrain).to_numpy()
 
@@ -141,9 +142,9 @@ def task_3(input_path_Xtrain, input_path_ytrain, model_path):
 step_3 = PythonOperator(
     task_id='step_3',
     python_callable=task_3,
-    op_kwargs={'input_path_Xtrain': 'mnsit-preprocess/Xtrain_data.csv', \
-               'input_path_ytrain': 'mnsit-preprocess/ytrain_data.csv', \
-               'model_path': 'mnsit-model/model1',
+    op_kwargs={'input_path_Xtrain': 'mnist-preprocess/Xtrain_data.csv', \
+               'input_path_ytrain': 'mnist-preprocess/ytrain_data.csv', \
+               'model_path': 'mnist-model/model1',
         },
     dag=dag,
 )
@@ -155,7 +156,7 @@ def task_4(input_path_Xtrain, input_path_ytrain, model_path):
     y_train = pd.read_csv(input_path_ytrain).to_numpy()
 
     scaler = StandardScaler()
-
+    train_samples = 5000
     X_train = scaler.fit_transform(X_train)
     # CHANGE THE MODEL
     clf = SGDClassifier(C=50. / train_samples, penalty='l1', solver='saga', tol=0.1)
@@ -169,9 +170,9 @@ def task_4(input_path_Xtrain, input_path_ytrain, model_path):
 step_4 = PythonOperator(
     task_id='step_4',
     python_callable=task_4,
-    op_kwargs={'input_path_Xtrain': 'mnsit-preprocess/Xtrain_data.csv', \
-               'input_path_ytrain': 'mnsit-preprocess/ytrain_data.csv', \
-               'model_path': 'mnsit-model/model2',
+    op_kwargs={'input_path_Xtrain': 'mnist-preprocess/Xtrain_data.csv', \
+               'input_path_ytrain': 'mnist-preprocess/ytrain_data.csv', \
+               'model_path': 'mnist-model/model2',
         },
     dag=dag,
 )
@@ -213,10 +214,10 @@ def task_5(input_path_Xtest, input_path_ytest, \
 step_5 = PythonOperator(
     task_id='step_5',
     python_callable=task_5,
-    op_kwargs={'input_path_Xtest': 'mnsit-preprocess/Xtest_data.csv', \
-               'input_path_ytest': 'mnsit-preprocess/ytest_data.csv', \
-               'model1_path': 'mnsit-model/model1', \
-               'model2_path': 'mnsit-model/model2',
+    op_kwargs={'input_path_Xtest': 'mnist-preprocess/Xtest_data.csv', \
+               'input_path_ytest': 'mnist-preprocess/ytest_data.csv', \
+               'model1_path': 'mnist-model/model1', \
+               'model2_path': 'mnist-model/model2',
         },
     dag=dag,
 )

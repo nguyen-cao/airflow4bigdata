@@ -33,6 +33,7 @@ from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.utils import check_random_state
+import pickle
 
 args = {
     'owner': 'Airflow',
@@ -90,7 +91,7 @@ step_1 = PythonOperator(
 def task_2(input_path_X, input_path_y, \
            output_path_Xtrain, output_path_ytrain, \
            output_path_Xtest, output_path_ytest):
-
+    train_samples = 5000
     # df_X = pd.read_csv(input_path_X)
     # df_y = pd.read_csv(input_path_y)
     X = pd.read_csv(input_path_X).to_numpy()
