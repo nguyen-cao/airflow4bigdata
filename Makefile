@@ -1,32 +1,23 @@
-# init:
-# 	docker pull puckel/docker-airflow
+start:
+	docker-compose -f docker-compose.yml up -d
 
-# start_webserver:
-# 	docker run --rm --name docker-airflow-webserver -d -p 8080:8080 puckel/docker-airflow webserver
-
-# stop_webserver:
-# 	docker stop docker-airflow-webserver
-
-# setup_db:
-# 	docker exec docker-airflow-webserver airflow initdb
-
-# start_scheduler:
-# 	docker run --rm --name docker-airflow-scheduler -d puckel/docker-airflow scheduler
+stop:
+	docker-compose -f docker-compose.yml down
 
 start_airflow:
-	docker-compose -f docker-compose.yml -p airflow up -d
+	docker-compose -f docker-compose.yml up -d airflow_redis airflow_postgres airflow_webserver flower airflow_scheduler airflow_worker
 
 stop_airflow:
-	docker-compose -f docker-compose.yml -p airflow down
+	docker-compose -f docker-compose.yml stop airflow_redis airflow_postgres airflow_webserver flower airflow_scheduler airflow_worker
 
 start_postgres:
-	docker-compose -f docker-compose-postgres.yml -p postgres up -d
+	docker-compose -f docker-compose.yml up -d postgres
 
 stop_postgres:
-	docker-compose -f docker-compose-postgres.yml -p postgres down	
+	docker-compose -f docker-compose.yml stop postgres	
 
 start_spark:
-	docker-compose -f docker-compose-spark.yml -p spark up -d
+	docker-compose -f docker-compose.yml up -d spark-master spark-worker-1 spark-worker-2
 
 stop_spark:
-	docker-compose -f docker-compose-spark.yml -p spark down
+	docker-compose -f docker-compose.yml stop spark-master spark-worker-1 spark-worker-2

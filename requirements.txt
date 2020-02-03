@@ -1,1 +1,4 @@
+pandas
+numpy
 apache-airflow
+pyspark
