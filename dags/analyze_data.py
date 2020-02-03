@@ -79,14 +79,14 @@ step_1 = PythonOperator(
 
 # Task 2 with SSHOperator
 # Hook to spark_default connection
-sparkSSHHook = SSHHook(ssh_conn_id="spark_default")
-step_2 = SSHOperator(
-    task_id="step_2",
-    remote_host="spark-master",
-    username="root",
-    command="/spark/bin/spark-submit --conf spark.pyspark.python=python3 /workspace/spark-code/weather_train.py /workspace/tmax-preprocess /workspace/tmax-model-1",
-    ssh_hook=sparkSSHHook,
-    dag=dag)
+# sparkSSHHook = SSHHook(ssh_conn_id="spark_default")
+# step_2 = SSHOperator(
+#     task_id="step_2",
+#     remote_host="spark-master",
+#     username="root",
+#     command="/spark/bin/spark-submit --conf spark.pyspark.python=python3 /workspace/spark-code/weather_train.py /workspace/tmax-preprocess /workspace/tmax-model-1",
+#     ssh_hook=sparkSSHHook,
+#     dag=dag)
 
 # # Task 2 with PythonOperator
 # def task_2(inputs, model_path):
@@ -136,20 +136,20 @@ step_2 = SSHOperator(
 # )
 
 # Task 2 with SparkSubmitOperator
-# step_2 =  SparkSubmitOperator(
-#     task_id='step_2',
-#     application='/workspace/spark-code/weather_train.py',
-#     application_args=['/workspace/tmax-preprocess','/workspace/tmax-model-1'],
-#     total_executor_cores='1',
-#     executor_cores='1',
-#     executor_memory='2g',
-#     num_executors='1',
-#     name='airflow-spark-step-2',
-#     verbose=False,
-#     driver_memory='1g',
-#     conf={'master':'spark://spark-master:7077'},
-#     dag=dag,
-# )
+step_2 =  SparkSubmitOperator(
+    task_id='step_2',
+    application='/usr/local/airflow/spark-code/weather_train.py',
+    application_args=['/workspace/tmax-preprocess','/workspace/tmax-model-1'],
+    total_executor_cores='1',
+    executor_cores='1',
+    executor_memory='2g',
+    num_executors='1',
+    name='airflow-spark-step-2',
+    verbose=False,
+    driver_memory='1g',
+    conf={'master':'spark://spark-master:7077'},
+    dag=dag,
+)
 
 step_start >> step_1
 step_1 >> step_2

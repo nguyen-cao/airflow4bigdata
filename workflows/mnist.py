@@ -123,7 +123,7 @@ step_2 = PythonOperator(
 
 # APPLY MODEL 1 TO TRAINING DATA
 def task_3(input_path_Xtrain, input_path_ytrain, model_path):
-
+    train_samples = 5000
     X_train = pd.read_csv(input_path_Xtrain).to_numpy()
     y_train = pd.read_csv(input_path_ytrain).to_numpy()
 
@@ -155,7 +155,7 @@ def task_4(input_path_Xtrain, input_path_ytrain, model_path):
     y_train = pd.read_csv(input_path_ytrain).to_numpy()
 
     scaler = StandardScaler()
-
+    train_samples = 5000
     X_train = scaler.fit_transform(X_train)
     # CHANGE THE MODEL
     clf = SGDClassifier(C=50. / train_samples, penalty='l1', solver='saga', tol=0.1)

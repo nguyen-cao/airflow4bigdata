@@ -24,7 +24,7 @@ services:
             - ./pgdata:/var/lib/postgresql/data/pgdata
 
     airflow_webserver:
-        image: puckel/docker-airflow:1.10.7
+        image: caoducnguyen/docker-airflow:1.10.7
         restart: always
         container_name: "airflow_webserver"
         depends_on:
@@ -55,7 +55,7 @@ services:
             retries: 3
 
     flower:
-        image: puckel/docker-airflow:1.10.7
+        image: caoducnguyen/docker-airflow:1.10.7
         restart: always
         container_name: "airflow_flower"
         depends_on:
@@ -69,7 +69,7 @@ services:
         command: flower
 
     airflow_scheduler:
-        image: puckel/docker-airflow:1.10.7
+        image: caoducnguyen/docker-airflow:1.10.7
         restart: always
         container_name: "airflow_scheduler"
         depends_on:
@@ -92,7 +92,7 @@ services:
         command: scheduler
 
     airflow_worker:
-        image: puckel/docker-airflow:1.10.7
+        image: caoducnguyen/docker-airflow:1.10.7
         restart: always
         container_name: "airflow_worker"
         depends_on:
@@ -103,6 +103,9 @@ services:
             - ./data/tmax-train:/usr/local/airflow/tmax-train
             - ./data/tmax-test:/usr/local/airflow/tmax-test
             - ./data/tmax-preprocess:/usr/local/airflow/tmax-preprocess
+            - ./data/mnist-preprocess:/usr/local/airflow/mnist-preprocess
+            - ./data/mnist-model:/usr/local/airflow/mnist-model
+            - ./spark-code:/usr/local/airflow/spark-code
             # Uncomment to include custom plugins
             # - ./plugins:/usr/local/airflow/plugins
         environment:
@@ -122,7 +125,6 @@ services:
         ports:
             - "8088:8080"
             - "7077:7077"
-            - "22:22"
         environment:
             - INIT_DAEMON_STEP=setup_spark
 
