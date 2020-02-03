@@ -2,3 +2,4 @@ pandas
 numpy
 apache-airflow
 pyspark
+scikit-learn
