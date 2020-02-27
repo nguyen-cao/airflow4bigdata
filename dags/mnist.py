@@ -222,12 +222,22 @@ step_5 = PythonOperator(
     dag=dag,
 )
 
+def stop_workflow(ds, **kwargs):
+    return 'STOP'
+
+
+step_6 = PythonOperator(
+    task_id='step_6',
+    provide_context=True, # ds
+    python_callable=stop_workflow,
+    dag=dag,
+)
 
 
 step_start >> step_1
 step_1 >> step_2
 step_2 >> step_3
 step_2 >> step_4
-[step_3, step_4] >> step_5
+[step_3, step_4] >> step_5 >> step_6
 
 # [END datascience_workflow]
